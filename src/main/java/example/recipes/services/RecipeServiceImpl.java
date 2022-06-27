@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @Service
@@ -47,10 +46,10 @@ public class RecipeServiceImpl implements RecipesService {
 
         String userId = recipeRequestDto.getUserId();
         String recipeName = recipeRequestDto.getRecipeName();
-        Optional<UserRecipesEntity> recipesEntityOptional = userRecipesRepository.findByUserIdAndRecipeName(userId, recipeName).
+        UserRecipesEntity recipesEntity = userRecipesRepository.findByUserIdAndRecipeName(userId, recipeName).
                 orElseThrow(() -> new UserRecipeNotFoundException(String.format("recipe %s for user %s was not found in database", recipeName, userId)));
 
-        UserRecipesEntity recipesEntity = recipesEntityOptional.get();
+        //  UserRecipesEntity recipesEntity = recipesEntityOptional.get();
         userRecipesMapper.updateRecipeEntity(recipeRequestDto, recipesEntity);
         userRecipesRepository.save(recipesEntity);
     }

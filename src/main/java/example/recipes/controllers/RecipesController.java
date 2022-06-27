@@ -54,8 +54,8 @@ public class RecipesController {
     }
 
     @Operation(summary = "Update recipe by user id and recipe name")
-    @PutMapping("/description")
-    public ResponseEntity<String> updateUserRecipe(@RequestBody ChangeRecipeRequestDto recipeRequestDto){
+    @PatchMapping("/edit")
+    public ResponseEntity<String> editUserRecipe(@RequestBody ChangeRecipeRequestDto recipeRequestDto){
      //   log.debug("PUT /captured-cards/status request received for deviceUid: {}", updateCapturedCardsStatusRequest.deviceUid);
         recipesService.updateUserRecipe(recipeRequestDto);
         return ResponseEntity.ok().build();
