@@ -17,7 +17,7 @@ public class UserRecipeInfoResponseDto {
     private String recipeName;
     private String recipeInstructions;
     private Boolean isVegetarian;
-    private Integer numberOfServings;
+    private Integer servingsNumber;
     private List<String> ingredients;
 
 

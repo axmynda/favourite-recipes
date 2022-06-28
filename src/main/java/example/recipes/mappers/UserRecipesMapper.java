@@ -1,31 +1,56 @@
 package example.recipes.mappers;
 
-import example.recipes.db.model.UserRecipesEntity;
+import example.recipes.db.model.UserRecipeEntity;
+import example.recipes.db.model.RecipeDescriptionEntity;
+import example.recipes.db.repository.RecipeDescriptionRepository;
 import example.recipes.models.request.AddUserRecipeRequestDto;
 import example.recipes.models.request.ChangeRecipeRequestDto;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.time.ZonedDateTime;
+import java.util.Collections;
+import java.util.Optional;
 
 @Component
+@RequiredArgsConstructor
 public class UserRecipesMapper {
 
-    public UserRecipesEntity mapUserRecipeToNewEntity(AddUserRecipeRequestDto recipeRequestDto) {
-        return new UserRecipesEntity(
+    private final RecipeDescriptionRepository recipeDescriptionRepository;
+
+    public UserRecipeEntity mapUserRecipeToNewEntity(AddUserRecipeRequestDto recipeRequestDto) {
+
+        return new UserRecipeEntity(
                 recipeRequestDto.getUserId(),
                 recipeRequestDto.getRecipeName(),
-                recipeRequestDto.getRecipeInstructions(),
-                recipeRequestDto.getIsVegetarian(),
-                recipeRequestDto.getServingsNumber(),
                 ZonedDateTime.now()
         );
     }
 
-    //or use @Query in repository
-    public void updateRecipeEntity(ChangeRecipeRequestDto recipeRequestDto, UserRecipesEntity recipesEntity) {
-        recipesEntity.setRecipeName(recipeRequestDto.getRecipeName());
-        recipesEntity.setRecipeInstructions(recipeRequestDto.getRecipeInstructions() == null ? recipesEntity.getRecipeInstructions() : recipeRequestDto.getRecipeInstructions());
-        recipesEntity.setNumberOfServings(recipeRequestDto.getServingsNumber() == null ? recipesEntity.getNumberOfServings() : recipeRequestDto.getServingsNumber());
-        recipesEntity.setIsVegetarian(recipeRequestDto.getIsVegetarian() == null ? recipesEntity.getIsVegetarian() : recipeRequestDto.getIsVegetarian());
+    public RecipeDescriptionEntity mapRecipeDescriptionToNewEntity(AddUserRecipeRequestDto recipeRequestDto, UserRecipeEntity userRecipeEntity){
+        return  new RecipeDescriptionEntity(
+                recipeRequestDto.getRecipeName(),
+                recipeRequestDto.getRecipeInstructions(),
+                recipeRequestDto.getIsVegetarian(),
+                recipeRequestDto.getServingsNumber(),
+                userRecipeEntity
+        );
+    }
+
+    public UserRecipeEntity updateRecipeEntity(ChangeRecipeRequestDto recipeRequestDto, UserRecipeEntity recipesEntity) {
+        Optional<RecipeDescriptionEntity> recipeEntity = recipesEntity.getRecipeDescription().stream().filter(it -> it.getRecipeName().equals(recipeRequestDto.getOldRecipeName())).findFirst();
+
+        if(recipeEntity.isPresent()){
+            RecipeDescriptionEntity entity = recipeEntity.get();
+            recipesEntity.setRecipeDescription(Collections.singletonList(new RecipeDescriptionEntity(
+                    (recipeRequestDto.getNewRecipeName() == null ? entity.getRecipeName() : recipeRequestDto.getNewRecipeName()),
+                    recipeRequestDto.getRecipeInstructions() == null ? entity.getRecipeInstructions() : recipeRequestDto.getRecipeInstructions(),
+                    recipeRequestDto.getIsVegetarian() == null ? entity.getIsVegetarian() : recipeRequestDto.getIsVegetarian(),
+                    recipeRequestDto.getServingsNumber() == null ? entity.getServingsNumber() : recipeRequestDto.getServingsNumber(),
+                    recipesEntity
+                    )
+            ));
+        }
+        return recipesEntity;
     }
 }

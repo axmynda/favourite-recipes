@@ -1,7 +1,10 @@
 package example.recipes.services;
 
-import example.recipes.db.model.UserRecipesEntity;
-import example.recipes.db.repository.UserRecipesRepository;
+import example.recipes.Utils.FilterRecipeResult;
+import example.recipes.db.model.RecipeDescriptionEntity;
+import example.recipes.db.model.UserRecipeEntity;
+import example.recipes.db.repository.RecipeDescriptionRepository;
+import example.recipes.db.repository.UserRecipeRepository;
 import example.recipes.exceptions.UserRecipeNotFoundException;
 import example.recipes.mappers.UserRecipesMapper;
 import example.recipes.models.request.AddUserRecipeRequestDto;
@@ -18,25 +21,32 @@ import java.util.List;
 @RequiredArgsConstructor
 public class RecipeServiceImpl implements RecipesService {
 
-    private final UserRecipesRepository userRecipesRepository;
+    private final UserRecipeRepository userRecipeRepository;
+    private final RecipeDescriptionRepository recipeDescriptionRepository;
     private final UserRecipesMapper userRecipesMapper;
+    private final FilterRecipeResult filter;
 
     @Override
+    @Transactional
     public void addUserRecipe(AddUserRecipeRequestDto recipeRequestDto) {
-        UserRecipesEntity userRecipesEntity = userRecipesMapper.mapUserRecipeToNewEntity(recipeRequestDto);
-        userRecipesRepository.save(userRecipesEntity);
+        UserRecipeEntity userRecipeEntity = userRecipesMapper.mapUserRecipeToNewEntity(recipeRequestDto);
+        RecipeDescriptionEntity recipeDescriptionEntity = userRecipesMapper.mapRecipeDescriptionToNewEntity(recipeRequestDto, userRecipeEntity);
+        userRecipeRepository.save(userRecipeEntity);
+        recipeDescriptionRepository.save((recipeDescriptionEntity));
     }
 
     @Override
-    public List<UserRecipesEntity> getUserRecipes(String userId) {
-        return userRecipesRepository.findAllByUserId(userId);
+    public List<UserRecipeEntity> getUserRecipes(String userId, Boolean isVegetarian, Integer servingsNumber, String specificIngredientsInclude, String specificIngredientsExclude, String textSearch) {
+        List<UserRecipeEntity> userRecipesEntities = userRecipeRepository.findAllByUserId(userId);
+
+        return filter.filterRecipes(isVegetarian, servingsNumber, specificIngredientsInclude, specificIngredientsExclude, textSearch, userRecipesEntities);
     }
 
     @Override
     @Transactional
     public void deleteUserRecipe(String userId, String userRecipe) {
 
-        userRecipesRepository.deleteByUserIdAndRecipeName(userId, userRecipe); //TODO обработать EmptyResultDataAccessException
+        userRecipeRepository.deleteByUserIdAndRecipeName(userId, userRecipe);
 
     }
 
@@ -45,13 +55,12 @@ public class RecipeServiceImpl implements RecipesService {
     public void updateUserRecipe(ChangeRecipeRequestDto recipeRequestDto) {
 
         String userId = recipeRequestDto.getUserId();
-        String recipeName = recipeRequestDto.getRecipeName();
-        UserRecipesEntity recipesEntity = userRecipesRepository.findByUserIdAndRecipeName(userId, recipeName).
+        String recipeName = recipeRequestDto.getOldRecipeName();
+        UserRecipeEntity recipesEntity = userRecipeRepository.findByUserIdAndRecipeName(userId, recipeName).
                 orElseThrow(() -> new UserRecipeNotFoundException(String.format("recipe %s for user %s was not found in database", recipeName, userId)));
 
-        //  UserRecipesEntity recipesEntity = recipesEntityOptional.get();
-        userRecipesMapper.updateRecipeEntity(recipeRequestDto, recipesEntity);
-        userRecipesRepository.save(recipesEntity);
+        UserRecipeEntity userRecipeEntity = userRecipesMapper.updateRecipeEntity(recipeRequestDto, recipesEntity);
+        userRecipeRepository.save(userRecipeEntity);
     }
 
 }

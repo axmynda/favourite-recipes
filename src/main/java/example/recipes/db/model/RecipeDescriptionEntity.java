@@ -1,0 +1,51 @@
+package example.recipes.db.model;
+
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+import javax.persistence.*;
+import java.util.UUID;
+
+
+@Entity
+@Getter
+@Setter
+@NoArgsConstructor
+@Table(name = "recipe_description")
+public class RecipeDescriptionEntity {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private UUID id;
+
+    @Column(unique = true, nullable = false)
+    String recipeName;
+
+    @Column
+    String recipeInstructions;
+
+    @Column
+    Boolean isVegetarian;
+
+    @Column
+    Integer servingsNumber;
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_id")
+    private UserRecipeEntity userRecipe;
+
+    public RecipeDescriptionEntity(String recipeName, String recipeInstructions, Boolean isVegetarian, Integer servingsNumber, UserRecipeEntity userRecipe) {
+        this.recipeName = recipeName;
+        this.recipeInstructions = recipeInstructions;
+        this.isVegetarian = isVegetarian;
+        this.servingsNumber = servingsNumber;
+        this.userRecipe = userRecipe;
+    }
+
+
+
+}
+
+
+
