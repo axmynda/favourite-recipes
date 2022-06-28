@@ -2,7 +2,6 @@ package example.recipes.mappers;
 
 import example.recipes.db.model.UserRecipeEntity;
 import example.recipes.db.model.RecipeDescriptionEntity;
-import example.recipes.db.repository.RecipeDescriptionRepository;
 import example.recipes.models.request.AddUserRecipeRequestDto;
 import example.recipes.models.request.ChangeRecipeRequestDto;
 import lombok.RequiredArgsConstructor;
@@ -16,10 +15,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class UserRecipesMapper {
 
-    private final RecipeDescriptionRepository recipeDescriptionRepository;
-
     public UserRecipeEntity mapUserRecipeToNewEntity(AddUserRecipeRequestDto recipeRequestDto) {
-
         return new UserRecipeEntity(
                 recipeRequestDto.getUserId(),
                 recipeRequestDto.getRecipeName(),
@@ -28,7 +24,7 @@ public class UserRecipesMapper {
     }
 
     public RecipeDescriptionEntity mapRecipeDescriptionToNewEntity(AddUserRecipeRequestDto recipeRequestDto, UserRecipeEntity userRecipeEntity){
-        return  new RecipeDescriptionEntity(
+        return new RecipeDescriptionEntity(
                 recipeRequestDto.getRecipeName(),
                 recipeRequestDto.getRecipeInstructions(),
                 recipeRequestDto.getIsVegetarian(),
@@ -38,11 +34,11 @@ public class UserRecipesMapper {
     }
 
     public UserRecipeEntity updateRecipeEntity(ChangeRecipeRequestDto recipeRequestDto, UserRecipeEntity recipesEntity) {
-        Optional<RecipeDescriptionEntity> recipeEntity = recipesEntity.getRecipeDescription().stream().filter(it -> it.getRecipeName().equals(recipeRequestDto.getOldRecipeName())).findFirst();
+        Optional<RecipeDescriptionEntity> recipeEntity = recipesEntity.getRecipeDescriptions().stream().filter(it -> it.getRecipeName().equals(recipeRequestDto.getOldRecipeName())).findFirst();
 
         if(recipeEntity.isPresent()){
             RecipeDescriptionEntity entity = recipeEntity.get();
-            recipesEntity.setRecipeDescription(Collections.singletonList(new RecipeDescriptionEntity(
+            recipesEntity.setRecipeDescriptions(Collections.singletonList(new RecipeDescriptionEntity(
                     (recipeRequestDto.getNewRecipeName() == null ? entity.getRecipeName() : recipeRequestDto.getNewRecipeName()),
                     recipeRequestDto.getRecipeInstructions() == null ? entity.getRecipeInstructions() : recipeRequestDto.getRecipeInstructions(),
                     recipeRequestDto.getIsVegetarian() == null ? entity.getIsVegetarian() : recipeRequestDto.getIsVegetarian(),

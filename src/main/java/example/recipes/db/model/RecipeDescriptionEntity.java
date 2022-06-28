@@ -1,17 +1,13 @@
 package example.recipes.db.model;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.UUID;
 
 
 @Entity
-@Getter
-@Setter
-@NoArgsConstructor
+@Data
 @Table(name = "recipe_description")
 public class RecipeDescriptionEntity {
 
@@ -19,7 +15,7 @@ public class RecipeDescriptionEntity {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
-    @Column(unique = true, nullable = false)
+    @Column
     String recipeName;
 
     @Column
@@ -34,6 +30,9 @@ public class RecipeDescriptionEntity {
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id")
     private UserRecipeEntity userRecipe;
+
+    public RecipeDescriptionEntity() {
+    }
 
     public RecipeDescriptionEntity(String recipeName, String recipeInstructions, Boolean isVegetarian, Integer servingsNumber, UserRecipeEntity userRecipe) {
         this.recipeName = recipeName;

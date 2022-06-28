@@ -12,8 +12,9 @@ import example.recipes.models.request.ChangeRecipeRequestDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
+import java.util.Collections;
 import java.util.List;
 
 @Slf4j
@@ -27,18 +28,19 @@ public class RecipeServiceImpl implements RecipesService {
     private final FilterRecipeResult filter;
 
     @Override
-    @Transactional
     public void addUserRecipe(AddUserRecipeRequestDto recipeRequestDto) {
         UserRecipeEntity userRecipeEntity = userRecipesMapper.mapUserRecipeToNewEntity(recipeRequestDto);
         RecipeDescriptionEntity recipeDescriptionEntity = userRecipesMapper.mapRecipeDescriptionToNewEntity(recipeRequestDto, userRecipeEntity);
+        userRecipeEntity.setRecipeDescriptions(Collections.singletonList(recipeDescriptionEntity));
+
+        //   userRecipeEntity.addRecipeDescription(recipeDescriptionEntity);
         userRecipeRepository.save(userRecipeEntity);
-        recipeDescriptionRepository.save((recipeDescriptionEntity));
     }
 
     @Override
+//    @Transactional
     public List<UserRecipeEntity> getUserRecipes(String userId, Boolean isVegetarian, Integer servingsNumber, String specificIngredientsInclude, String specificIngredientsExclude, String textSearch) {
         List<UserRecipeEntity> userRecipesEntities = userRecipeRepository.findAllByUserId(userId);
-
         return filter.filterRecipes(isVegetarian, servingsNumber, specificIngredientsInclude, specificIngredientsExclude, textSearch, userRecipesEntities);
     }
 

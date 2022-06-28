@@ -1,5 +1,6 @@
 package example.recipes.db.model;
 
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -8,14 +9,11 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import javax.persistence.*;
 import java.time.ZonedDateTime;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 
 @Entity
-@Getter
-@Setter
-@NoArgsConstructor
+@Data
 @Table(name = "user_recipe")
 public class UserRecipeEntity {
 
@@ -30,7 +28,7 @@ public class UserRecipeEntity {
     String recipeName;
 
     @OneToMany(mappedBy = "userRecipe", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
-    private List<RecipeDescriptionEntity> recipeDescription;
+    private List<RecipeDescriptionEntity> recipeDescriptions;
 
     @Column
     private ZonedDateTime creationDate;
@@ -41,6 +39,14 @@ public class UserRecipeEntity {
         this.creationDate = creationDate;
     }
 
+    public void addRecipeDescription(RecipeDescriptionEntity recipeDescription) {
+        recipeDescription.setUserRecipe(this);
+        this.recipeDescriptions.add(recipeDescription);
+    }
+
+    public UserRecipeEntity() {
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -49,12 +55,12 @@ public class UserRecipeEntity {
 
         UserRecipeEntity that = (UserRecipeEntity) o;
 
-        return new EqualsBuilder().append(id, that.id).append(userId, that.userId).append(recipeName, that.recipeName).append(recipeDescription, that.recipeDescription).append(creationDate, that.creationDate).isEquals();
+        return new EqualsBuilder().append(id, that.id).append(userId, that.userId).append(recipeName, that.recipeName).append(recipeDescriptions, that.recipeDescriptions).append(creationDate, that.creationDate).isEquals();
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder(17, 37).append(id).append(userId).append(recipeName).append(recipeDescription).append(creationDate).toHashCode();
+        return new HashCodeBuilder(17, 37).append(id).append(userId).append(recipeName).append(recipeDescriptions).append(creationDate).toHashCode();
     }
 
     @Override
@@ -63,7 +69,7 @@ public class UserRecipeEntity {
                 "id=" + id +
                 ", userId='" + userId + '\'' +
                 ", recipeName='" + recipeName + '\'' +
-                ", userRecipes=" + recipeDescription +
+                ", userRecipes=" + recipeDescriptions +
                 ", creationDate=" + creationDate +
                 '}';
     }

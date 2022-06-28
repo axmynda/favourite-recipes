@@ -7,6 +7,10 @@ spring:
   jpa:
     spring.jpa.database-platform: org.hibernate.dialect.H2Dialect
     show-sql: true
+    open-in-view: true
   h2:
     console.enabled: true
 
+logging:
+  level:
+    sql: debug
