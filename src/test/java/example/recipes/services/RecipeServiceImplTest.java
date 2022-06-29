@@ -3,17 +3,15 @@ package example.recipes.services;
 import example.recipes.Utils.FilterRecipeResult;
 import example.recipes.db.repository.UserRecipeRepository;
 import example.recipes.mappers.UserRecipesMapper;
-import example.recipes.models.request.AddUserRecipeRequestDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
 import static example.recipes.Stub.*;
-import static example.recipes.Stub.getUserRecipeEntity;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.verify;
 
 @SpringBootTest(classes = RecipeServiceImpl.class)
 class RecipeServiceImplTest {
@@ -48,18 +46,28 @@ class RecipeServiceImplTest {
 
 
         verify(userRecipesMapper).mapUserRecipeToNewEntity(addUserRecipeRequest);
-        verify(userRecipesMapper).mapRecipeDescriptionToNewEntity(addUserRecipeRequest, getUserRecipeEntity());
-     //   verify(userRecipeRepository).save(getUserRecipeEntity());
+        //   verify(userRecipesMapper).mapRecipeDescriptionToNewEntity(addUserRecipeRequest, getUserRecipeEntity());
+        //   verify(userRecipeRepository).save(getUserRecipeEntity());
 
     }
 
-
     @Test
-    void getUserRecipes() {
+    void test_success_delete_user_recipe() {
+        recipeService.deleteUserRecipe(TEST_USER_ID, "pizza");
+        verify(userRecipeRepository).delete(any(), any());
     }
 
     @Test
-    void deleteUserRecipe() {
+    void test_success_get_user_recipes() {
+        doReturn(getUserRecipeEntities())
+                .when(userRecipeRepository)
+                .findAllByUserId(TEST_USER_ID);
+
+        recipeService.getUserRecipes(TEST_USER_ID, false, 2, null, null, null);
+
+        verify(userRecipeRepository).findAllByUserId(TEST_USER_ID);
+        verify(filter).filterRecipes(false, 2, null, null, null, getUserRecipeEntities());
+
     }
 
     @Test

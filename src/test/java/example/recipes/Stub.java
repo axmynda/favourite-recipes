@@ -12,10 +12,13 @@ import java.util.List;
 
 public class Stub {
 
+    public static final String TEST_USER_ID = "1";
+
+
 
     public static UserRecipeEntity getUserRecipeEntity() {
         return new UserRecipeEntity(
-                "1",
+                TEST_USER_ID,
                 "Borsch",
                 ZonedDateTime.ofInstant(Instant.parse("2018-10-20T16:55:30.00Z"), ZoneId.of("Europe/Paris")));
     }
@@ -70,7 +73,7 @@ public class Stub {
     }
 
     public static UserRecipeInfoResponseDto getUserRecipeInfoResponseDto() {
-        return new UserRecipeInfoResponseDto("1",
+        return new UserRecipeInfoResponseDto(TEST_USER_ID,
                 "Borsch",
                 List.of(getUserRecipeEntity()
                 ));
@@ -78,13 +81,20 @@ public class Stub {
 
     public static AddUserRecipeRequestDto getAddUserRecipeRequestDto() {
         return new AddUserRecipeRequestDto(
-                "1",
+                TEST_USER_ID,
                 "Best pizza",
                 "make pizza",
                 false,
                 3,
                 List.of("potato", "meat", "salad")
         );
+    }
+
+    public static List<UserRecipeEntity> getUserRecipeEntities() {
+        return List.of( new UserRecipeEntity(
+                TEST_USER_ID,
+                "Borsch",
+                ZonedDateTime.ofInstant(Instant.parse("2018-10-20T16:55:30.00Z"), ZoneId.of("Europe/Paris"))));
     }
 
 }
