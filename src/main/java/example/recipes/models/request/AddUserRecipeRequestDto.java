@@ -2,6 +2,7 @@ package example.recipes.models.request;
 
 
 import lombok.*;
+
 import java.util.List;
 
 
@@ -12,11 +13,11 @@ import java.util.List;
 @ToString
 public class AddUserRecipeRequestDto {
 
-   private String userId;
-   private String recipeName;
-   private String recipeInstructions;
-   private Boolean isVegetarian;
-   private Integer servingsNumber;
-   private List<String> ingredients;
+    private String userId;
+    private String recipeName;
+    private String recipeInstructions;
+    private Boolean isVegetarian;
+    private Integer servingsNumber;
+    private List<String> ingredients;
 
 }

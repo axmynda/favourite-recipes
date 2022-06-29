@@ -1,67 +1,80 @@
 package example.recipes.Utils;
 
 import example.recipes.db.model.RecipeDescriptionEntity;
-import example.recipes.db.model.UserRecipeEntity;
+import example.recipes.exceptions.UserRecipeNotFoundException;
+import example.recipes.models.response.UserRecipeInfoResponseDto;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component
 public class FilterRecipeResult {
 
-    public List<UserRecipeEntity> filterRecipes(Boolean isVegetarian, Integer servingsNumber, String specificIngredientsInclude, String specificIngredientsExclude, String textSearch, List<UserRecipeEntity> userRecipesEntities) {
-        filterVegetarianRecipes(isVegetarian, userRecipesEntities);
-        filterServingsNumber(servingsNumber, userRecipesEntities);
-        filterSpecificIncludeIngredients(specificIngredientsInclude, userRecipesEntities);
-        filterSpecificExcludeIngredients(specificIngredientsExclude, userRecipesEntities);
-        filterTextSearch(textSearch, userRecipesEntities);
-        return userRecipesEntities;
+
+    public UserRecipeInfoResponseDto filterRecipes(Boolean isVegetarian, Integer servingsNumber, String specificIngredientsInclude, String specificIngredientsExclude, String textSearch, List<RecipeDescriptionEntity> recipeDescriptionEntities) {
+
+
+        List<RecipeDescriptionEntity> filterVegetarianRecipes = filterVegetarianRecipes(isVegetarian, recipeDescriptionEntities);
+        List<RecipeDescriptionEntity> filterServingsNumber = filterServingsNumber(servingsNumber, filterVegetarianRecipes);
+        List<RecipeDescriptionEntity> filterSpecificIncludeIngredients = filterSpecificIncludeIngredients(specificIngredientsInclude, filterServingsNumber);
+        List<RecipeDescriptionEntity> filterSpecificExcludeIngredients = filterSpecificExcludeIngredients(specificIngredientsExclude, filterSpecificIncludeIngredients);
+        List<RecipeDescriptionEntity> allFilters = filterTextSearch(textSearch, filterSpecificExcludeIngredients);
+
+        Optional<RecipeDescriptionEntity> entity = recipeDescriptionEntities.stream().findFirst();
+        if (entity.isPresent()) {
+            return new UserRecipeInfoResponseDto(
+                    entity.get().getUserId(),
+                    entity.get().getRecipeName(),
+                    allFilters);
+        } else {
+            throw new UserRecipeNotFoundException(String.format("recipe for user was not found in database"/*, recipeName, userId*/));
+        }
     }
 
-    private List<UserRecipeEntity> filterTextSearch(String textSearch, List<UserRecipeEntity> userRecipesEntities) {
+    private List<RecipeDescriptionEntity> filterTextSearch(String textSearch, List<RecipeDescriptionEntity> userRecipesEntities) {
 
         if (textSearch != null) {
-            return userRecipesEntities.stream().filter(it -> it.getRecipeDescriptions().stream().anyMatch(s -> s.getRecipeInstructions().contains(textSearch)))
+            return userRecipesEntities.stream().filter(s -> s.getRecipeInstructions().contains(textSearch))
                     .collect(Collectors.toList());
         }
         return userRecipesEntities;
     }
 
-    private List<UserRecipeEntity> filterSpecificIncludeIngredients(String specificIngredientsInclude, List<UserRecipeEntity> userRecipesEntities) {
+    private List<RecipeDescriptionEntity> filterSpecificIncludeIngredients(String specificIngredientsInclude, List<RecipeDescriptionEntity> recipeDescriptionEntities) {
 
         if (specificIngredientsInclude != null) {
-            return userRecipesEntities.stream().filter(it -> it.getRecipeDescriptions().stream().anyMatch(s -> s.getRecipeInstructions().equals(specificIngredientsInclude)))
+            return recipeDescriptionEntities.stream().filter(s -> s.getIngredients().equals(specificIngredientsInclude))
                     .collect(Collectors.toList());
         }
-        return userRecipesEntities;
+        return recipeDescriptionEntities;
     }
 
-    private List<UserRecipeEntity> filterSpecificExcludeIngredients(String specificIngredientsExclude, List<UserRecipeEntity> userRecipesEntities) {
+    private List<RecipeDescriptionEntity> filterSpecificExcludeIngredients(String specificIngredientsExclude, List<RecipeDescriptionEntity> recipeDescriptionEntities) {
 
         if (specificIngredientsExclude != null) {
-            return userRecipesEntities.stream().filter(it -> it.getRecipeDescriptions().stream().anyMatch(s -> !s.getRecipeInstructions().equals(specificIngredientsExclude)))
+            return recipeDescriptionEntities.stream().filter(s -> !s.getIngredients().equals(specificIngredientsExclude))
                     .collect(Collectors.toList());
         }
-        return userRecipesEntities;
+        return recipeDescriptionEntities;
     }
 
-    private List<UserRecipeEntity> filterServingsNumber(Integer servingsNumber, List<UserRecipeEntity> userRecipesEntities) {
+    private List<RecipeDescriptionEntity> filterServingsNumber(Integer servingsNumber, List<RecipeDescriptionEntity> recipeDescriptionEntities) {
         if (servingsNumber != null) {
-            return userRecipesEntities.stream().filter(it -> it.getRecipeDescriptions().stream().anyMatch(s -> s.getServingsNumber().equals(servingsNumber)))
+            return recipeDescriptionEntities.stream().filter(s -> s.getServingsNumber().equals(servingsNumber))
                     .collect(Collectors.toList());
         }
-        return userRecipesEntities;
+        return recipeDescriptionEntities;
 
     }
 
-    private List<UserRecipeEntity> filterVegetarianRecipes(Boolean isVegetarian, List<UserRecipeEntity> userRecipesEntities) {
-        if (isVegetarian != null && isVegetarian.equals(true)) {
-            return userRecipesEntities.stream().filter(it -> it.getRecipeDescriptions().stream().anyMatch(RecipeDescriptionEntity::getIsVegetarian))
+    private List<RecipeDescriptionEntity> filterVegetarianRecipes(Boolean isVegetarian, List<RecipeDescriptionEntity> recipeDescriptionEntities) {
+        if (isVegetarian != null) {
+            return recipeDescriptionEntities.stream().filter(it -> it.getIsVegetarian().equals(isVegetarian))
                     .collect(Collectors.toList());
-            //  return userRecipesEntities.stream().filter(UserEntity::getIsVegetarian).collect(Collectors.toList());
         }
-        return userRecipesEntities;
+        return recipeDescriptionEntities;
     }
 
 }

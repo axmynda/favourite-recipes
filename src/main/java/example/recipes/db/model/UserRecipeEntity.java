@@ -1,15 +1,14 @@
 package example.recipes.db.model;
 
 import lombok.Data;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import javax.persistence.*;
 import java.time.ZonedDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 
 @Entity
@@ -17,21 +16,19 @@ import java.util.*;
 @Table(name = "user_recipe")
 public class UserRecipeEntity {
 
+    @Column
+    String recipeName;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
-
     @Column
     private String userId;
-
-    @Column
-    String recipeName;
-
-    @OneToMany(mappedBy = "userRecipe", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
-    private List<RecipeDescriptionEntity> recipeDescriptions;
-
     @Column
     private ZonedDateTime creationDate;
+
+    //  @OneToMany(mappedBy = "userRecipe", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<RecipeDescriptionEntity> recipeDescriptions = new ArrayList<>();
 
     public UserRecipeEntity(String userId, String recipeName, ZonedDateTime creationDate) {
         this.userId = userId;
@@ -39,10 +36,21 @@ public class UserRecipeEntity {
         this.creationDate = creationDate;
     }
 
-    public void addRecipeDescription(RecipeDescriptionEntity recipeDescription) {
+
+/*    public void addRecipeDescription(RecipeDescriptionEntity recipeDescription) {
         recipeDescription.setUserRecipe(this);
-        this.recipeDescriptions.add(recipeDescription);
+        recipeDescriptions.add(recipeDescription);
     }
+
+    public void addStudent(RecipeDescriptionEntity student) {
+        recipeDescriptions.add(student);
+        student.setUserRecipe(this);
+    }*/
+
+/*    public void removeStudent(Student student) {
+        students.remove(student);
+        student.setClass(null);
+    }*/
 
     public UserRecipeEntity() {
     }

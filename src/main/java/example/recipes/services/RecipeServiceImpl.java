@@ -9,12 +9,12 @@ import example.recipes.exceptions.UserRecipeNotFoundException;
 import example.recipes.mappers.UserRecipesMapper;
 import example.recipes.models.request.AddUserRecipeRequestDto;
 import example.recipes.models.request.ChangeRecipeRequestDto;
+import example.recipes.models.response.UserRecipeInfoResponseDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collections;
 import java.util.List;
 
 @Slf4j
@@ -28,28 +28,28 @@ public class RecipeServiceImpl implements RecipesService {
     private final FilterRecipeResult filter;
 
     @Override
+    @Transactional
     public void addUserRecipe(AddUserRecipeRequestDto recipeRequestDto) {
         UserRecipeEntity userRecipeEntity = userRecipesMapper.mapUserRecipeToNewEntity(recipeRequestDto);
-        RecipeDescriptionEntity recipeDescriptionEntity = userRecipesMapper.mapRecipeDescriptionToNewEntity(recipeRequestDto, userRecipeEntity);
-        userRecipeEntity.setRecipeDescriptions(Collections.singletonList(recipeDescriptionEntity));
-
-        //   userRecipeEntity.addRecipeDescription(recipeDescriptionEntity);
+        RecipeDescriptionEntity recipeDescriptionEntity = userRecipesMapper.mapRecipeDescriptionToNewEntity(recipeRequestDto);
+        userRecipeEntity.getRecipeDescriptions().add(recipeDescriptionEntity);
+        log.info("Save userRecipeEntity in db: {}", userRecipeEntity);
         userRecipeRepository.save(userRecipeEntity);
     }
 
     @Override
-//    @Transactional
-    public List<UserRecipeEntity> getUserRecipes(String userId, Boolean isVegetarian, Integer servingsNumber, String specificIngredientsInclude, String specificIngredientsExclude, String textSearch) {
-        List<UserRecipeEntity> userRecipesEntities = userRecipeRepository.findAllByUserId(userId);
-        return filter.filterRecipes(isVegetarian, servingsNumber, specificIngredientsInclude, specificIngredientsExclude, textSearch, userRecipesEntities);
+    @Transactional
+    public UserRecipeInfoResponseDto getUserRecipes(String userId, Boolean isVegetarian, Integer servingsNumber, String specificIngredientsInclude, String specificIngredientsExclude, String textSearch) {
+        List<RecipeDescriptionEntity> recipeDescriptionEntities = recipeDescriptionRepository.findAllByUserId(userId);
+
+        return filter.filterRecipes(isVegetarian, servingsNumber, specificIngredientsInclude, specificIngredientsExclude,
+                textSearch, recipeDescriptionEntities);
     }
 
     @Override
     @Transactional
     public void deleteUserRecipe(String userId, String userRecipe) {
-
         userRecipeRepository.deleteByUserIdAndRecipeName(userId, userRecipe);
-
     }
 
     @Override

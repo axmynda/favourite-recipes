@@ -1,6 +1,7 @@
 package example.recipes.models.response;
 
 
+import example.recipes.db.model.RecipeDescriptionEntity;
 import lombok.*;
 
 import java.util.List;
@@ -15,10 +16,6 @@ public class UserRecipeInfoResponseDto {
 
     private String userId;
     private String recipeName;
-    private String recipeInstructions;
-    private Boolean isVegetarian;
-    private Integer servingsNumber;
-    private List<String> ingredients;
-
+    private List<RecipeDescriptionEntity> recipeDescriptionEntities;
 
 }

@@ -1,8 +1,8 @@
 package example.recipes.controllers;
 
-import example.recipes.db.model.UserRecipeEntity;
 import example.recipes.models.request.AddUserRecipeRequestDto;
 import example.recipes.models.request.ChangeRecipeRequestDto;
+import example.recipes.models.response.UserRecipeInfoResponseDto;
 import example.recipes.services.RecipesService;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.Operation;
@@ -11,8 +11,6 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 
 @Slf4j
@@ -26,27 +24,24 @@ import java.util.List;
 )
 @RequestMapping("/v1/api/recipe")
 public class RecipesController {
-
+    //TODO add http code adapter
     private final RecipesService recipesService;
 
     @Operation(summary = "Add your own recipe")
     @PostMapping
     public ResponseEntity<String> addUserRecipe(@RequestBody AddUserRecipeRequestDto recipeRequestDto) {
-
         recipesService.addUserRecipe(recipeRequestDto);
-        //     log.info("Prepare transaction request: {}", command);
-
         return ResponseEntity.ok().build();
     }
 
     @Operation(summary = "Getting all recipes for user")
     @GetMapping(value = "/{userId}")
-    public ResponseEntity<List<UserRecipeEntity>> getUserFavouriteRecipes(@PathVariable("userId") String userId,
-                                                                          @RequestParam(required = false) Boolean isVegetarian,
-                                                                          @RequestParam(required = false) Integer servingsNumber,
-                                                                          @RequestParam(required = false) String specificIngredientsInclude,
-                                                                          @RequestParam(required = false) String specificIngredientsExclude,
-                                                                          @RequestParam(required = false) String textSearch) {
+    public ResponseEntity<UserRecipeInfoResponseDto> getUserFavouriteRecipes(@PathVariable("userId") String userId,
+                                                                             @RequestParam(required = false) Boolean isVegetarian,
+                                                                             @RequestParam(required = false) Integer servingsNumber,
+                                                                             @RequestParam(required = false) String specificIngredientsInclude,
+                                                                             @RequestParam(required = false) String specificIngredientsExclude,
+                                                                             @RequestParam(required = false) String textSearch) {
         return ResponseEntity.ok(recipesService.getUserRecipes(userId, isVegetarian, servingsNumber, specificIngredientsInclude, specificIngredientsExclude, textSearch));
     }
 
@@ -62,7 +57,6 @@ public class RecipesController {
     @Operation(summary = "Update recipe by user id and recipe name")
     @PatchMapping("/edit")
     public ResponseEntity<String> editUserRecipe(@RequestBody ChangeRecipeRequestDto recipeRequestDto) {
-        //   log.debug("PUT /captured-cards/status request received for deviceUid: {}", updateCapturedCardsStatusRequest.deviceUid);
         recipesService.updateUserRecipe(recipeRequestDto);
         return ResponseEntity.ok().build();
     }
