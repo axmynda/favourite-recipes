@@ -1,56 +1,89 @@
 package example.recipes;
 
 import example.recipes.db.model.RecipeDescriptionEntity;
+import example.recipes.db.model.UserRecipeEntity;
+import example.recipes.models.request.AddUserRecipeRequestDto;
 import example.recipes.models.response.UserRecipeInfoResponseDto;
 
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 public class Stub {
 
 
-    public static List<RecipeDescriptionEntity> getRecipeDescriptionEntityList() {
+    public static UserRecipeEntity getUserRecipeEntity() {
+        return new UserRecipeEntity(
+                "1",
+                "Borsch",
+                ZonedDateTime.ofInstant(Instant.parse("2018-10-20T16:55:30.00Z"), ZoneId.of("Europe/Paris")));
+    }
 
-        return List.of(
-                new RecipeDescriptionEntity(
+    public static RecipeDescriptionEntity getRecipeDescriptionEntity() {
+        return new RecipeDescriptionEntity(
                         "Borsch",
-                        "1",
                         "Make veg Borsch",
                         true,
                         2,
-                        "salt,meat,sugar"),
+                        "salt,meat,sugar",
+                        getUserRecipeEntity()
+        );
+    }
+
+    public static List<RecipeDescriptionEntity> getRecipeDescriptionEntityList() {
+        return List.of(
                 new RecipeDescriptionEntity(
                         "Borsch",
-                        "1",
-                        "Make meat Borsch",
-                        false,
-                        5, "salt,meat,sugar"
+                        "Make veg Borsch",
+                        true,
+                        2,
+                        "salt,meat,sugar",
+                        getUserRecipeEntity()
                 ),
                 new RecipeDescriptionEntity(
                         "Borsch",
-                        "1",
+                        "Make meat Borsch",
+                        false,
+                        5, "salt,meat,sugar",
+                        getUserRecipeEntity()
+                ),
+                new RecipeDescriptionEntity(
+                        "Borsch",
                         "Make salty Borsch",
                         false,
-                        2, "salt,meat,sugar"),
+                        2, "salt,meat,sugar",
+                        getUserRecipeEntity()),
                 new RecipeDescriptionEntity(
                         "Borsch",
-                        "1",
                         "Make Borsch",
                         false,
-                        2, "salt,meat,sugar"),
+                        2, "salt,meat,sugar",
+                        getUserRecipeEntity()),
                 new RecipeDescriptionEntity(
                         "Borsch",
-                        "1",
                         "Make cold Borsch",
                         true,
-                        3, "salt,meat,sugar"));
+                        3, "salt,meat,sugar",
+                        getUserRecipeEntity()));
 
     }
 
     public static UserRecipeInfoResponseDto getUserRecipeInfoResponseDto() {
-
         return new UserRecipeInfoResponseDto("1",
                 "Borsch",
-                getRecipeDescriptionEntityList()
+                List.of(getUserRecipeEntity()
+                ));
+    }
+
+    public static AddUserRecipeRequestDto getAddUserRecipeRequestDto() {
+        return new AddUserRecipeRequestDto(
+                "1",
+                "Best pizza",
+                "make pizza",
+                false,
+                3,
+                List.of("potato", "meat", "salad")
         );
     }
 

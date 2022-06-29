@@ -16,18 +16,21 @@ import java.util.UUID;
 @Table(name = "user_recipe")
 public class UserRecipeEntity {
 
-    @Column
-    String recipeName;
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
+
+    @Column(unique = true)
+    String recipeName;
+
     @Column
     private String userId;
+
     @Column
     private ZonedDateTime creationDate;
 
-    //  @OneToMany(mappedBy = "userRecipe", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "userRecipe", cascade = { CascadeType.PERSIST} /* fetch = FetchType.EAGER*/)
     private List<RecipeDescriptionEntity> recipeDescriptions = new ArrayList<>();
 
     public UserRecipeEntity(String userId, String recipeName, ZonedDateTime creationDate) {
@@ -37,15 +40,15 @@ public class UserRecipeEntity {
     }
 
 
-/*    public void addRecipeDescription(RecipeDescriptionEntity recipeDescription) {
+   public void addRecipeDescription(RecipeDescriptionEntity recipeDescription) {
         recipeDescription.setUserRecipe(this);
         recipeDescriptions.add(recipeDescription);
     }
 
-    public void addStudent(RecipeDescriptionEntity student) {
-        recipeDescriptions.add(student);
+    public void removeRecipeDescription(RecipeDescriptionEntity student) {
+        recipeDescriptions.remove(student);
         student.setUserRecipe(this);
-    }*/
+    }
 
 /*    public void removeStudent(Student student) {
         students.remove(student);

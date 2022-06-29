@@ -1,7 +1,7 @@
 package example.recipes.models.response;
 
 
-import example.recipes.db.model.RecipeDescriptionEntity;
+import example.recipes.db.model.UserRecipeEntity;
 import lombok.*;
 
 import java.util.List;
@@ -16,6 +16,6 @@ public class UserRecipeInfoResponseDto {
 
     private String userId;
     private String recipeName;
-    private List<RecipeDescriptionEntity> recipeDescriptionEntities;
+    private List<UserRecipeEntity> recipeDescriptionEntities;
 
 }

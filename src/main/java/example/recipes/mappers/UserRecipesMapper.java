@@ -24,14 +24,14 @@ public class UserRecipesMapper {
         );
     }
 
-    public RecipeDescriptionEntity mapRecipeDescriptionToNewEntity(AddUserRecipeRequestDto recipeRequestDto) {
+    public RecipeDescriptionEntity mapRecipeDescriptionToNewEntity(AddUserRecipeRequestDto recipeRequestDto, UserRecipeEntity userRecipeEntity) {
         return new RecipeDescriptionEntity(
                 recipeRequestDto.getRecipeName(),
-                recipeRequestDto.getUserId(),
                 recipeRequestDto.getRecipeInstructions(),
                 recipeRequestDto.getIsVegetarian(),
                 recipeRequestDto.getServingsNumber(),
-                StringUtils.join(recipeRequestDto.getIngredients(), ",")
+                StringUtils.join(recipeRequestDto.getIngredients(), ","),
+                userRecipeEntity
         );
     }
 
@@ -42,12 +42,12 @@ public class UserRecipesMapper {
             RecipeDescriptionEntity entity = recipeEntity.get();
             recipesEntity.setRecipeDescriptions(Collections.singletonList(new RecipeDescriptionEntity(
                     (recipeRequestDto.getNewRecipeName() == null ? entity.getRecipeName() : recipeRequestDto.getNewRecipeName()),
-                    recipeRequestDto.getUserId() == null ? entity.getUserId() : recipeRequestDto.getUserId(),
                     recipeRequestDto.getRecipeInstructions() == null ? entity.getRecipeInstructions() : recipeRequestDto.getRecipeInstructions(),
                     recipeRequestDto.getIsVegetarian() == null ? entity.getIsVegetarian() : recipeRequestDto.getIsVegetarian(),
                     recipeRequestDto.getServingsNumber() == null ? entity.getServingsNumber() : recipeRequestDto.getServingsNumber(),
-                    recipeRequestDto.getIngredients() == null ? entity.getIngredients() : StringUtils.join(recipeRequestDto.getIngredients(), ","))
-            ));
+                    recipeRequestDto.getIngredients() == null ? entity.getIngredients() : StringUtils.join(recipeRequestDto.getIngredients(), ","),
+                    recipesEntity
+            )));
         }
         return recipesEntity;
     }

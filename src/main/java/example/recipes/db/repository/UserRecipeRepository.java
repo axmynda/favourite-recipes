@@ -21,6 +21,8 @@ public interface UserRecipeRepository extends JpaRepository<UserRecipeEntity, UU
 
     @Modifying
     @Query("delete from UserRecipeEntity u where u.userId=:userId and u.recipeName=:recipeName")
-    void deleteByUserIdAndRecipeName(@Param("userId") String userId, @Param("recipeName") String recipeName);
+    void delete(@Param("userId") String userId, @Param("recipeName") String recipeName);
+
+  //  void deleteByUserIdAndRecipeName(String userId, String recipeName);
 
 }

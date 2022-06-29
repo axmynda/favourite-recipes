@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.info.Info;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,10 +29,10 @@ public class RecipesController {
     private final RecipesService recipesService;
 
     @Operation(summary = "Add your own recipe")
+    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
-    public ResponseEntity<String> addUserRecipe(@RequestBody AddUserRecipeRequestDto recipeRequestDto) {
+    public void addUserRecipe(@RequestBody AddUserRecipeRequestDto recipeRequestDto) {
         recipesService.addUserRecipe(recipeRequestDto);
-        return ResponseEntity.ok().build();
     }
 
     @Operation(summary = "Getting all recipes for user")
