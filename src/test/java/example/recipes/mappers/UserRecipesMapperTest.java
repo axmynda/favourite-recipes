@@ -2,13 +2,12 @@ package example.recipes.mappers;
 
 import example.recipes.db.model.RecipeDescriptionEntity;
 import example.recipes.db.model.UserRecipeEntity;
-import example.recipes.services.RecipeServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import static example.recipes.Stub.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest(classes = UserRecipesMapper.class)
 class UserRecipesMapperTest {
@@ -17,7 +16,7 @@ class UserRecipesMapperTest {
     UserRecipesMapper userRecipesMapper;
 
     @Test
-    void test_success_update_user_recipe_entity (){
+    void test_success_update_user_recipe_entity() {
         var request = getChangeUserRecipeRequestDto();
         UserRecipeEntity userRecipeEntity = getUserRecipeEntity();
         RecipeDescriptionEntity recipeDescriptionEntity = getRecipeDescriptionEntity();
@@ -34,10 +33,10 @@ class UserRecipesMapperTest {
         assertEquals(request.getServingsNumber(), actual.getServingsNumber());
 
     }
-    
-    
+
+
     @Test
-    void test_success_map_new_user_recipe_entity (){
+    void test_success_map_new_user_recipe_entity() {
         var request = getAddUserRecipeRequestDto();
 
         var actual = userRecipesMapper.mapUserRecipeToNewEntity(request);
@@ -48,7 +47,7 @@ class UserRecipesMapperTest {
     }
 
     @Test
-    void test_success_map_new_recipe_description_entity (){
+    void test_success_map_new_recipe_description_entity() {
         var request = getAddUserRecipeRequestDto();
         var entity = getUserRecipeEntity();
 

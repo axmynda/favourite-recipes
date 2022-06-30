@@ -32,7 +32,7 @@ public class UserRecipeEntity {
     private ZonedDateTime creationDate;
 
     @JsonManagedReference
-    @OneToMany(mappedBy = "userRecipe", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "userRecipe", cascade = CascadeType.ALL)
     private List<RecipeDescriptionEntity> recipeDescriptions = new ArrayList<>();
 
     public UserRecipeEntity(String userId, String recipeName, ZonedDateTime creationDate) {

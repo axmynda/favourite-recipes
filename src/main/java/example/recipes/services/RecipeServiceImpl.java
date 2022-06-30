@@ -46,7 +46,6 @@ public class RecipeServiceImpl implements RecipesService {
 
     @Override
     @Transactional
-    //TODO refactoring
     public void deleteUserRecipe(String userId, String recipeName) {
         UserRecipeEntity recipeEntity = userRecipeRepository.findByUserIdAndRecipeName(userId, recipeName).orElseThrow(() -> new UserRecipeNotFoundException(String.format("recipe %s for user %s was not found in database", recipeName, userId)));
         recipeDescriptionRepository.delete(recipeEntity.getId(), recipeName);
