@@ -1,17 +1,21 @@
 package example.recipes.db.model;
 
-import lombok.Data;
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import lombok.*;
 
 import javax.persistence.*;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 
 @Entity
 @Data
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "user_recipe")
 public class UserRecipeEntity {
 
@@ -27,7 +31,8 @@ public class UserRecipeEntity {
     @Column
     private ZonedDateTime creationDate;
 
-    @OneToMany(mappedBy = "userRecipe", cascade = CascadeType.ALL /* fetch = FetchType.EAGER*/)
+    @JsonManagedReference
+    @OneToMany(mappedBy = "userRecipe", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<RecipeDescriptionEntity> recipeDescriptions = new ArrayList<>();
 
     public UserRecipeEntity(String userId, String recipeName, ZonedDateTime creationDate) {
@@ -36,9 +41,6 @@ public class UserRecipeEntity {
         this.creationDate = creationDate;
     }
 
-
-    public UserRecipeEntity() {
-    }
 
     public void addRecipeDescription(RecipeDescriptionEntity recipeDescription) {
         recipeDescription.setUserRecipe(this);
@@ -50,30 +52,28 @@ public class UserRecipeEntity {
         recipeDescription.setUserRecipe(this);
     }
 
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-
         if (o == null || getClass() != o.getClass()) return false;
-
         UserRecipeEntity that = (UserRecipeEntity) o;
-
-        return new EqualsBuilder().append(id, that.id).append(userId, that.userId).append(recipeName, that.recipeName).append(recipeDescriptions, that.recipeDescriptions).append(creationDate, that.creationDate).isEquals();
+        return Objects.equals(recipeName, that.recipeName) && Objects.equals(id, that.id) && Objects.equals(userId, that.userId) && Objects.equals(creationDate, that.creationDate) && Objects.equals(recipeDescriptions, that.recipeDescriptions);
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder(17, 37).append(id).append(userId).append(recipeName).append(recipeDescriptions).append(creationDate).toHashCode();
+        return Objects.hash(recipeName, id, userId, creationDate, recipeDescriptions);
     }
 
     @Override
     public String toString() {
-        return "UserEntity{" +
-                "id=" + id +
+        return "UserRecipeEntity{" +
+                "recipeName='" + recipeName + '\'' +
+                ", id=" + id +
                 ", userId='" + userId + '\'' +
-                ", recipeName='" + recipeName + '\'' +
-                ", userRecipes=" + recipeDescriptions +
                 ", creationDate=" + creationDate +
+                ", recipeDescriptions=" + recipeDescriptions +
                 '}';
     }
 }

@@ -12,8 +12,7 @@ import java.util.stream.Stream;
 
 import static example.recipes.Stub.getUserRecipeEntity;
 import static example.recipes.Stub.getUserRecipeInfoResponseDto;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.params.provider.Arguments.of;
 
 @SpringBootTest(classes = FilterRecipeResult.class)
@@ -28,10 +27,7 @@ class FilterRecipeResultTest {
         return Stream.of(
                 of(true, null, null, null, "Make Borsch", entityList),
                 of(true, 1, "nuts", "meat", "search text", entityList),
-                of(true, 1, "nuts", "meat", "search text", entityList),
-                of(true, 1, "nuts", "meat", "search text", entityList),
-                of(true, 1, "nuts", "meat", "search text", entityList)
-        );
+                of(false, 1, "salad", "potato", "some text", entityList));
     }
 
     @ParameterizedTest
@@ -45,7 +41,7 @@ class FilterRecipeResultTest {
 
         assertEquals(expected.getRecipeName(), actual.getRecipeName());
         assertEquals(expected.getUserId(), actual.getUserId());
-        //       assertTrue(expected.getRecipeDescriptionEntities().containsAll(actual.getRecipeDescriptionEntities()));
+        assertTrue(expected.getRecipeDescriptionEntities().containsAll(actual.getRecipeDescriptionEntities()));
 
     }
 }

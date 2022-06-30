@@ -3,6 +3,7 @@ package example.recipes;
 import example.recipes.db.model.RecipeDescriptionEntity;
 import example.recipes.db.model.UserRecipeEntity;
 import example.recipes.models.request.AddUserRecipeRequestDto;
+import example.recipes.models.request.ChangeRecipeRequestDto;
 import example.recipes.models.response.UserRecipeInfoResponseDto;
 
 import java.time.Instant;
@@ -52,6 +53,13 @@ public class Stub {
                         getUserRecipeEntity()
                 ),
                 new RecipeDescriptionEntity(
+                        "Best pizza",
+                        "Make pizza",
+                        false,
+                        5, "salt,meat,sugar",
+                        getUserRecipeEntity()
+                ),
+                new RecipeDescriptionEntity(
                         TEST_RECIPE_NAME,
                         "Make salty Borsch",
                         false,
@@ -86,6 +94,19 @@ public class Stub {
                 "make pizza",
                 false,
                 3,
+                List.of("potato", "meat", "salad")
+        );
+    }
+
+
+    public static ChangeRecipeRequestDto getChangeUserRecipeRequestDto() {
+        return new ChangeRecipeRequestDto(
+                TEST_USER_ID,
+                "Best pizza",
+                TEST_RECIPE_NAME,
+                "Make veg Borsch",
+                true,
+                2,
                 List.of("potato", "meat", "salad")
         );
     }

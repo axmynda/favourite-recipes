@@ -3,6 +3,7 @@ package example.recipes.utils;
 import example.recipes.db.model.UserRecipeEntity;
 import example.recipes.exceptions.UserRecipeNotFoundException;
 import example.recipes.models.response.UserRecipeInfoResponseDto;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -10,20 +11,20 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component
+@RequiredArgsConstructor
 public class FilterRecipeResult {
 
 
     public UserRecipeInfoResponseDto filterRecipes(Boolean isVegetarian, Integer servingsNumber, String specificIngredientsInclude, String specificIngredientsExclude, String textSearch, List<UserRecipeEntity> userRecipeEntities) {
 
-
-        List<UserRecipeEntity> filterVegetarianRecipes = filterVegetarianRecipes(isVegetarian, userRecipeEntities);
-        List<UserRecipeEntity> filterServingsNumber = filterServingsNumber(servingsNumber, filterVegetarianRecipes);
-        List<UserRecipeEntity> filterSpecificIncludeIngredients = filterSpecificIncludeIngredients(specificIngredientsInclude, filterServingsNumber);
-        List<UserRecipeEntity> filterSpecificExcludeIngredients = filterSpecificExcludeIngredients(specificIngredientsExclude, filterSpecificIncludeIngredients);
-        List<UserRecipeEntity> allFilters = filterTextSearch(textSearch, filterSpecificExcludeIngredients);
-
         Optional<UserRecipeEntity> entity = userRecipeEntities.stream().findFirst();
         if (entity.isPresent()) {
+            List<UserRecipeEntity> filterVegetarianRecipes = filterVegetarianRecipes(isVegetarian, userRecipeEntities);
+            List<UserRecipeEntity> filterServingsNumber = filterServingsNumber(servingsNumber, filterVegetarianRecipes);
+            List<UserRecipeEntity> filterSpecificIncludeIngredients = filterSpecificIncludeIngredients(specificIngredientsInclude, filterServingsNumber);
+            List<UserRecipeEntity> filterSpecificExcludeIngredients = filterSpecificExcludeIngredients(specificIngredientsExclude, filterSpecificIncludeIngredients);
+            List<UserRecipeEntity> allFilters = filterTextSearch(textSearch, filterSpecificExcludeIngredients);
+
             return new UserRecipeInfoResponseDto(
                     entity.get().getUserId(),
                     entity.get().getRecipeName(),
