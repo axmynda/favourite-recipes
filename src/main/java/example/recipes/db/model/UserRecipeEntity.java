@@ -8,7 +8,6 @@ import javax.persistence.*;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 
 @Entity
@@ -17,20 +16,18 @@ import java.util.UUID;
 public class UserRecipeEntity {
 
 
+    @Column
+    String recipeName;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private UUID id;
-
-    @Column(unique = true)
-    String recipeName;
-
+    private Long id;
     @Column
     private String userId;
 
     @Column
     private ZonedDateTime creationDate;
 
-    @OneToMany(mappedBy = "userRecipe", cascade = { CascadeType.PERSIST} /* fetch = FetchType.EAGER*/)
+    @OneToMany(mappedBy = "userRecipe", cascade = CascadeType.ALL /* fetch = FetchType.EAGER*/)
     private List<RecipeDescriptionEntity> recipeDescriptions = new ArrayList<>();
 
     public UserRecipeEntity(String userId, String recipeName, ZonedDateTime creationDate) {
@@ -40,22 +37,17 @@ public class UserRecipeEntity {
     }
 
 
-   public void addRecipeDescription(RecipeDescriptionEntity recipeDescription) {
+    public UserRecipeEntity() {
+    }
+
+    public void addRecipeDescription(RecipeDescriptionEntity recipeDescription) {
         recipeDescription.setUserRecipe(this);
         recipeDescriptions.add(recipeDescription);
     }
 
-    public void removeRecipeDescription(RecipeDescriptionEntity student) {
-        recipeDescriptions.remove(student);
-        student.setUserRecipe(this);
-    }
-
-/*    public void removeStudent(Student student) {
-        students.remove(student);
-        student.setClass(null);
-    }*/
-
-    public UserRecipeEntity() {
+    public void removeRecipeDescription(RecipeDescriptionEntity recipeDescription) {
+        recipeDescriptions.remove(recipeDescription);
+        recipeDescription.setUserRecipe(this);
     }
 
     @Override

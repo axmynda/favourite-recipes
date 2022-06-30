@@ -13,31 +13,31 @@ import java.util.List;
 public class Stub {
 
     public static final String TEST_USER_ID = "1";
-
+    public static final String TEST_RECIPE_NAME = "Borsch";
 
 
     public static UserRecipeEntity getUserRecipeEntity() {
         return new UserRecipeEntity(
                 TEST_USER_ID,
-                "Borsch",
+                TEST_RECIPE_NAME,
                 ZonedDateTime.ofInstant(Instant.parse("2018-10-20T16:55:30.00Z"), ZoneId.of("Europe/Paris")));
     }
 
     public static RecipeDescriptionEntity getRecipeDescriptionEntity() {
         return new RecipeDescriptionEntity(
-                        "Borsch",
-                        "Make veg Borsch",
-                        true,
-                        2,
-                        "salt,meat,sugar",
-                        getUserRecipeEntity()
+                TEST_RECIPE_NAME,
+                "Make veg Borsch",
+                true,
+                2,
+                "salt,meat,sugar",
+                getUserRecipeEntity()
         );
     }
 
     public static List<RecipeDescriptionEntity> getRecipeDescriptionEntityList() {
         return List.of(
                 new RecipeDescriptionEntity(
-                        "Borsch",
+                        TEST_RECIPE_NAME,
                         "Make veg Borsch",
                         true,
                         2,
@@ -45,26 +45,26 @@ public class Stub {
                         getUserRecipeEntity()
                 ),
                 new RecipeDescriptionEntity(
-                        "Borsch",
+                        TEST_RECIPE_NAME,
                         "Make meat Borsch",
                         false,
                         5, "salt,meat,sugar",
                         getUserRecipeEntity()
                 ),
                 new RecipeDescriptionEntity(
-                        "Borsch",
+                        TEST_RECIPE_NAME,
                         "Make salty Borsch",
                         false,
                         2, "salt,meat,sugar",
                         getUserRecipeEntity()),
                 new RecipeDescriptionEntity(
-                        "Borsch",
+                        TEST_RECIPE_NAME,
                         "Make Borsch",
                         false,
                         2, "salt,meat,sugar",
                         getUserRecipeEntity()),
                 new RecipeDescriptionEntity(
-                        "Borsch",
+                        TEST_RECIPE_NAME,
                         "Make cold Borsch",
                         true,
                         3, "salt,meat,sugar",
@@ -74,7 +74,7 @@ public class Stub {
 
     public static UserRecipeInfoResponseDto getUserRecipeInfoResponseDto() {
         return new UserRecipeInfoResponseDto(TEST_USER_ID,
-                "Borsch",
+                TEST_RECIPE_NAME,
                 List.of(getUserRecipeEntity()
                 ));
     }
@@ -91,9 +91,9 @@ public class Stub {
     }
 
     public static List<UserRecipeEntity> getUserRecipeEntities() {
-        return List.of( new UserRecipeEntity(
+        return List.of(new UserRecipeEntity(
                 TEST_USER_ID,
-                "Borsch",
+                TEST_RECIPE_NAME,
                 ZonedDateTime.ofInstant(Instant.parse("2018-10-20T16:55:30.00Z"), ZoneId.of("Europe/Paris"))));
     }
 

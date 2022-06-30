@@ -4,7 +4,6 @@ import lombok.Data;
 import lombok.ToString;
 
 import javax.persistence.*;
-import java.util.UUID;
 
 
 @Entity
@@ -13,27 +12,21 @@ import java.util.UUID;
 public class RecipeDescriptionEntity {
 
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private UUID id;
-
-    @Column(unique = true)
+    @Column
     String recipeName;
-
     @Column
     String recipeInstructions;
-
     @Column
     Boolean isVegetarian;
-
     @Column
     Integer servingsNumber;
-
     @Column
     String ingredients;
-
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
     @ToString.Exclude
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "user_id")
     private UserRecipeEntity userRecipe;
 

@@ -1,4 +1,4 @@
-package example.recipes.Utils;
+package example.recipes.utils;
 
 import example.recipes.db.model.UserRecipeEntity;
 import example.recipes.exceptions.UserRecipeNotFoundException;

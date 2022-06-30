@@ -1,14 +1,15 @@
 package example.recipes.services;
 
-import example.recipes.Utils.FilterRecipeResult;
 import example.recipes.db.model.RecipeDescriptionEntity;
 import example.recipes.db.model.UserRecipeEntity;
+import example.recipes.db.repository.RecipeDescriptionRepository;
 import example.recipes.db.repository.UserRecipeRepository;
 import example.recipes.exceptions.UserRecipeNotFoundException;
 import example.recipes.mappers.UserRecipesMapper;
 import example.recipes.models.request.AddUserRecipeRequestDto;
 import example.recipes.models.request.ChangeRecipeRequestDto;
 import example.recipes.models.response.UserRecipeInfoResponseDto;
+import example.recipes.utils.FilterRecipeResult;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -23,6 +24,7 @@ public class RecipeServiceImpl implements RecipesService {
 
 
     private final UserRecipeRepository userRecipeRepository;
+    private final RecipeDescriptionRepository recipeDescriptionRepository;
     private final UserRecipesMapper userRecipesMapper;
     private final FilterRecipeResult filter;
 
@@ -44,8 +46,11 @@ public class RecipeServiceImpl implements RecipesService {
 
     @Override
     @Transactional
-    public void deleteUserRecipe(String userId, String userRecipe) {
-        userRecipeRepository.delete(userId, userRecipe);
+    //TODO refactoring
+    public void deleteUserRecipe(String userId, String recipeName) {
+        UserRecipeEntity recipeEntity = userRecipeRepository.findByUserIdAndRecipeName(userId, recipeName).orElseThrow(() -> new UserRecipeNotFoundException(String.format("recipe %s for user %s was not found in database", recipeName, userId)));
+        recipeDescriptionRepository.delete(recipeEntity.getId(), recipeName);
+        userRecipeRepository.delete(userId, recipeName);
     }
 
     @Override

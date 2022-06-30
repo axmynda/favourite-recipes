@@ -1,4 +1,4 @@
-package example.recipes.Utils;
+package example.recipes.utils;
 
 import example.recipes.db.model.UserRecipeEntity;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -10,8 +10,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.util.List;
 import java.util.stream.Stream;
 
-import static example.recipes.Stub.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static example.recipes.Stub.getUserRecipeEntity;
+import static example.recipes.Stub.getUserRecipeInfoResponseDto;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.params.provider.Arguments.of;
 
 @SpringBootTest(classes = FilterRecipeResult.class)
@@ -43,7 +45,7 @@ class FilterRecipeResultTest {
 
         assertEquals(expected.getRecipeName(), actual.getRecipeName());
         assertEquals(expected.getUserId(), actual.getUserId());
- //       assertTrue(expected.getRecipeDescriptionEntities().containsAll(actual.getRecipeDescriptionEntities()));
+        //       assertTrue(expected.getRecipeDescriptionEntities().containsAll(actual.getRecipeDescriptionEntities()));
 
     }
 }

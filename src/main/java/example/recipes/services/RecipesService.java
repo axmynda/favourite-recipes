@@ -10,7 +10,7 @@ public interface RecipesService {
 
     UserRecipeInfoResponseDto getUserRecipes(String userId, Boolean isVegeterian, Integer servingsNumber, String specificIngredientsInclude, String specificIngredientsExclude, String textSearch);
 
-    void deleteUserRecipe(String userId, String userRecipe);
+    void deleteUserRecipe(String userId, String recipeName);
 
     void updateUserRecipe(ChangeRecipeRequestDto recipeRequestDto);
 }

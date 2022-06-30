@@ -1,8 +1,9 @@
 package example.recipes.services;
 
-import example.recipes.Utils.FilterRecipeResult;
+import example.recipes.db.repository.RecipeDescriptionRepository;
 import example.recipes.db.repository.UserRecipeRepository;
 import example.recipes.mappers.UserRecipesMapper;
+import example.recipes.utils.FilterRecipeResult;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -10,8 +11,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 
 import static example.recipes.Stub.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 @SpringBootTest(classes = RecipeServiceImpl.class)
 class RecipeServiceImplTest {
@@ -21,6 +21,9 @@ class RecipeServiceImplTest {
 
     @MockBean
     UserRecipeRepository userRecipeRepository;
+
+    @MockBean
+    RecipeDescriptionRepository recipeDescriptionRepository;
 
     @MockBean
     UserRecipesMapper userRecipesMapper;
@@ -53,8 +56,11 @@ class RecipeServiceImplTest {
 
     @Test
     void test_success_delete_user_recipe() {
-        recipeService.deleteUserRecipe(TEST_USER_ID, "pizza");
+        when(userRecipeRepository.findByUserIdAndRecipeName(TEST_USER_ID, TEST_RECIPE_NAME)).thenReturn(getUserRecipeEntities().stream().findFirst());
+        recipeService.deleteUserRecipe(TEST_USER_ID, TEST_RECIPE_NAME);
+
         verify(userRecipeRepository).delete(any(), any());
+        verify(recipeDescriptionRepository).delete(any(), any());
     }
 
     @Test
@@ -70,7 +76,5 @@ class RecipeServiceImplTest {
 
     }
 
-    @Test
-    void updateUserRecipe() {
-    }
+
 }

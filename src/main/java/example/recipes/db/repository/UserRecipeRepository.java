@@ -10,10 +10,9 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @Repository
-public interface UserRecipeRepository extends JpaRepository<UserRecipeEntity, UUID> {
+public interface UserRecipeRepository extends JpaRepository<UserRecipeEntity, Long> {
 
     List<UserRecipeEntity> findAllByUserId(String userId);
 
@@ -22,7 +21,5 @@ public interface UserRecipeRepository extends JpaRepository<UserRecipeEntity, UU
     @Modifying
     @Query("delete from UserRecipeEntity u where u.userId=:userId and u.recipeName=:recipeName")
     void delete(@Param("userId") String userId, @Param("recipeName") String recipeName);
-
-  //  void deleteByUserIdAndRecipeName(String userId, String recipeName);
 
 }
